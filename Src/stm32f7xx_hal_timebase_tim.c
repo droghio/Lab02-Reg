@@ -55,7 +55,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {
 	 + ClockDivision = 0
 	 + Counter direction = Up
 	 */
-	TimHandle.Init.Period = (1000000U / 100U) - 1U;
+	TimHandle.Init.Period = (1000000U / 10U) - 1U;
 	TimHandle.Init.Prescaler = uwPrescalerValue;
 	TimHandle.Init.ClockDivision = 0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -68,56 +68,8 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {
 	return HAL_ERROR;
 }
 
-/**
- * @brief  Suspend Tick increment.
- * @note   Disable the tick increment by disabling TIM6 update interrupt.
- * @param  None
- * @retval None
- */
-void HAL_SuspendTick(void) {
-	/* Disable TIM6 update Interrupt */
-	__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE);
-}
 
-/**
- * @brief  Resume Tick increment.
- * @note   Enable the tick increment by Enabling TIM6 update interrupt.
- * @param  None
- * @retval None
- */
-void HAL_ResumeTick(void) {
-	/* Enable TIM6 Update interrupt */
-	__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
-}
-
-/**
- * @brief  Period elapsed callback in non blocking mode
- * @note   This function is called  when TIM6 interrupt took place, inside
- * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
- * a global variable "uwTick" used as application time base.
- * @param  htim : TIM handle
- * @retval None
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	HAL_IncTick();
-}
-
-/**
- * @brief  This function handles TIM interrupt request.
- * @param  None
- * @retval None
- */
 void TIM6_DAC_IRQHandler(void) {
-	HAL_TIM_IRQHandler(&TimHandle);
+	TimHandle.Instance->SR = ~(TIM_IT_UPDATE);
 	BSP_LED_Toggle(LED1);
 }
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

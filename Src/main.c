@@ -63,16 +63,6 @@ static void SystemClock_Config(void);
  * @retval None
  */
 int main(void) {
-	/* This sample code shows how to configure The HAL time base source base with a
-	 dedicated  Tick interrupt priority.
-	 A general purpose timer (TIM6) is used instead of Systick as source of time base.
-	 Time base duration is fixed to 1ms since PPP_TIMEOUT_VALUEs are defined and
-	 handled in milliseconds basis.
-	 */
-
-	/* Enable the CPU Cache */
-	//CPU_CACHE_Enable();
-
 	/* STM32F7xx HAL library initialization:
 	 - Configure the Flash prefetch
 	 - Configure timer (TIM6) to generate an interrupt each 1 msec
@@ -95,7 +85,6 @@ int main(void) {
 	while (1) {
 		/* Insert a 1s delay */
 		HAL_Delay(1000);
-
 		/* Toggle LED2 */
 		BSP_LED_Toggle(LED2);
 	}
@@ -109,16 +98,8 @@ int main(void) {
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == USER_BUTTON_PIN) {
 		if (uwIncrementState == 0) {
-			/* Suspend tick increment */
-			HAL_SuspendTick();
-
-			/* Change the Push button state */
 			uwIncrementState = 1;
 		} else {
-			/* Resume tick increment */
-			HAL_ResumeTick();
-
-			/* Change the Push button state */
 			uwIncrementState = 0;
 		}
 	}
@@ -126,7 +107,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
 /**
  * @brief  System Clock Configuration
- *         The system Clock is configured as follow :
+ *         The system Clock is configured as follow
  *            System Clock source            = PLL (HSE)
  *            SYSCLK(Hz)                     = 216000000
  *            HCLK(Hz)                       = 216000000
@@ -190,7 +171,6 @@ static void SystemClock_Config(void) {
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-
 	ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7);
 	if (ret != HAL_OK) {
 		while (1)
