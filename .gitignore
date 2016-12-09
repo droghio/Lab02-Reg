@@ -1,8 +1,3 @@
-.cproject
-.dep/
-.project
-.settings/
-
 #files being edited
 *~
 
@@ -14,6 +9,7 @@
 *.map
 *.sym
 *.d
+*.mk
 
 # I keep these, since I prefer having the reference of the final build
 # *.elf
