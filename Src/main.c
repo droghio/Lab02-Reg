@@ -54,7 +54,6 @@
 uint32_t uwIncrementState = 0;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -87,6 +86,7 @@ int main(void) {
 
 	/* Configure LED2 */
 	BSP_LED_Init(LED2);
+	BSP_LED_Init(LED1);
 
 	/* Configure Tamper push-button */
 	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI);
@@ -197,25 +197,4 @@ static void SystemClock_Config(void) {
 			;
 	}
 }
-/**
- * @brief  CPU L1-Cache enable.
- * @param  None
- * @retval None
- */
-static void CPU_CACHE_Enable(void) {
-	/* Enable I-Cache */
-	SCB_EnableICache();
 
-	/* Enable D-Cache */
-	SCB_EnableDCache();
-}
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
