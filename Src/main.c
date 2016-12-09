@@ -1,67 +1,8 @@
-/**
- ******************************************************************************
- * @file    HAL/HAL_TimeBase_TIM/Src/main.c
- * @author  MCD Application Team
- * @version V1.0.0
- * @date    22-April-2016
- * @brief   This example describes how to configure HAL time base using
- *          the STM32F7xx HAL API.
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright notice,
- *      this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *   3. Neither the name of STMicroelectronics nor the names of its contributors
- *      may be used to endorse or promote products derived from this software
- *      without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- ******************************************************************************
- */
-
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/** @addtogroup STM32F7xx_HAL_Examples
- * @{
- */
-
-/** @addtogroup HAL_TimeBase_TIM
- * @{
- */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-uint32_t uwIncrementState = 0;
-/* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
+int Init_Tick();
 
-/* Private functions ---------------------------------------------------------*/
-
-/**
- * @brief  Main program
- * @param  None
- * @retval None
- */
 int main(void) {
 	/* STM32F7xx HAL library initialization:
 	 - Configure the Flash prefetch
@@ -73,6 +14,7 @@ int main(void) {
 
 	/* Configure the system clock to 216 MHz */
 	SystemClock_Config();
+	Init_Tick();
 
 	/* Configure LED2 */
 	BSP_LED_Init(LED2);
@@ -87,21 +29,6 @@ int main(void) {
 		HAL_Delay(1000);
 		/* Toggle LED2 */
 		BSP_LED_Toggle(LED2);
-	}
-}
-
-/**
- * @brief EXTI line detection callback.
- * @param GPIO_Pin: Specifies the pins connected EXTI line
- * @retval None
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin == USER_BUTTON_PIN) {
-		if (uwIncrementState == 0) {
-			uwIncrementState = 1;
-		} else {
-			uwIncrementState = 0;
-		}
 	}
 }
 

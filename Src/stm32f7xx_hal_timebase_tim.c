@@ -14,21 +14,18 @@ void TIM6_DAC_IRQHandler(void);
  * @param  TickPriority: Tick interrupt priority.
  * @retval HAL status
  */
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority){ return HAL_OK; }
+int Init_Tick(){
 	RCC_ClkInitTypeDef clkconfig;
 	uint32_t uwTimclock, uwAPB1Prescaler = 0U;
 	uint32_t uwPrescalerValue = 0U;
 	uint32_t pFLatency;
 
-	/*Configure the TIM6 IRQ priority */
-	HAL_NVIC_SetPriority(TIM6_DAC_IRQn, TickPriority, 0U);
-
 	/* Enable the TIM6 global Interrupt */
-	HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+	NVIC_EnableIRQ(TIM6_DAC_IRQn);
 
 	/* Enable TIM6 clock */
-	__HAL_RCC_TIM6_CLK_ENABLE()
-	;
+	__HAL_RCC_TIM6_CLK_ENABLE();
 
 	/* Get clock configuration */
 	HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
@@ -70,6 +67,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {
 
 
 void TIM6_DAC_IRQHandler(void) {
-	TimHandle.Instance->SR = ~(TIM_IT_UPDATE);
+	TIM6->SR = ~(TIM_IT_UPDATE);
 	BSP_LED_Toggle(LED1);
 }
