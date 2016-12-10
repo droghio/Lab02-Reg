@@ -44,5 +44,5 @@ int Init_Tick(){
 
 void TIM6_DAC_IRQHandler(void) {
 	TIM6->SR = ~(TIM_IT_UPDATE);
-	BSP_LED_Toggle(LED1);
+	GPIOJ->ODR ^= GPIO_PIN_13;
 }
