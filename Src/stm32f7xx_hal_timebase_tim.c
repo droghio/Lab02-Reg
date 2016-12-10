@@ -16,53 +16,29 @@ void TIM6_DAC_IRQHandler(void);
  */
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority){ return HAL_OK; }
 int Init_Tick(){
-	RCC_ClkInitTypeDef clkconfig;
-	uint32_t uwTimclock, uwAPB1Prescaler = 0U;
-	uint32_t uwPrescalerValue = 0U;
-	uint32_t pFLatency;
-
-	/* Enable the TIM6 global Interrupt */
-	NVIC_EnableIRQ(TIM6_DAC_IRQn);
+	// Enable the global register.
+	// Looks like HAL hid this little gem, not this register isn't mentioned in
+	//   the STM32F7 ARM Reference Manual....
+	NVIC->ISER[TIM6_DAC_IRQn/32U] = (uint32_t)(1UL << (((uint32_t)TIM6_DAC_IRQn) & 0x1FUL));
 
 	/* Enable TIM6 clock */
-	__HAL_RCC_TIM6_CLK_ENABLE();
+    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM6EN);
+    asm ( "nop" );
+    asm ( "nop" );
 
-	/* Get clock configuration */
-	HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+    // Set pre-scaler to make a 1MHz ticker.
+    TIM6->PSC = (uint32_t) ((216000000U / 1000000U) - 1U);
 
-	/* Get APB1 prescaler */
-	uwAPB1Prescaler = clkconfig.APB1CLKDivider;
+    // Set the Auto-reload Value
+    TIM6->ARR = (1000000U / 10U) - 1U;
 
-	/* Compute TIM6 clock */
-	if (uwAPB1Prescaler == RCC_HCLK_DIV1) {
-		uwTimclock = HAL_RCC_GetPCLK1Freq();
-	} else {
-		uwTimclock = 2 * HAL_RCC_GetPCLK1Freq();
-	}
+    // Trigger an Update Event.
+    TIM6->EGR = TIM_EGR_UG;
 
-	/* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
-	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
+    TIM6->DIER |= (TIM_DIER_UIE);
+	TIM6->CR1|=(TIM_CR1_CEN);
 
-	/* Initialize TIM6 */
-	TimHandle.Instance = TIM6;
-
-	/* Initialize TIMx peripheral as follow:
-	 + Period = [(TIM6CLK/1000) - 1]. to have a (1/1000) s time base.
-	 + Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
-	 + ClockDivision = 0
-	 + Counter direction = Up
-	 */
-	TimHandle.Init.Period = (1000000U / 10U) - 1U;
-	TimHandle.Init.Prescaler = uwPrescalerValue;
-	TimHandle.Init.ClockDivision = 0;
-	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	if (HAL_TIM_Base_Init(&TimHandle) == HAL_OK) {
-		/* Start the TIM time Base generation in interrupt mode */
-		return HAL_TIM_Base_Start_IT(&TimHandle);
-	}
-
-	/* Return function status */
-	return HAL_ERROR;
+	return 0;
 }
 
 
