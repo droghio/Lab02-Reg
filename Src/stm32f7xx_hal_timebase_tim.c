@@ -1,10 +1,7 @@
-
-#include "stm32f7xx_hal.h"
-#include "stm32f769i_discovery.h"
+#include "stm32f769xx.h"
 
 void TIM6_DAC_IRQHandler(void);
 
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority){ return HAL_OK; }
 int Init_Tick(){
 	// Enable the global register.
 	// Looks like HAL hid this little gem, not this register isn't mentioned in
@@ -27,12 +24,10 @@ int Init_Tick(){
 
     TIM6->DIER |= TIM_DIER_UIE;
 	TIM6->CR1 |= TIM_CR1_CEN;
-
 	return 0;
 }
 
-
 void TIM6_DAC_IRQHandler(void) {
-	TIM6->SR = ~TIM_IT_UPDATE;
-	GPIOJ->ODR ^= GPIO_PIN_13;
+	TIM6->SR = ~TIM_DIER_UIE;
+	GPIOJ->ODR ^= ((uint16_t)0x2000U); //GPIO_PIN_13
 }
