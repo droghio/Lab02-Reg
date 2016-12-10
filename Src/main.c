@@ -1,4 +1,6 @@
 // -- Imports ---------------
+#include <stdio.h>
+#include <stdlib.h>
 
 // CMSIS Header, defines register structure.
 #include "stm32f769xx.h"
@@ -6,8 +8,9 @@
 #include "system_stm32f7xx.h"
 
 // -- Function Defines ------
-int Init_Tick();
+int Init_Timer();
 void TIM6_DAC_IRQHandler(void);
+extern void initialise_monitor_handles();
 
 // -- Code Body -------------
 int main(void) {
@@ -25,7 +28,14 @@ int main(void) {
 	GPIOJ->MODER |= GPIO_MODER_MODER13
 			& (GPIO_MODER_MODER13 - (GPIO_MODER_MODER13 >> 1));
 
-	while (1);
+	// Enable semihosting printing.
+	initialise_monitor_handles();
+
+	uint32_t counter = 0;
+	while (1){
+		counter = (counter+1) % SystemCoreClock;
+		if (!counter) printf("Howdy all!\n");
+	}
 }
 
 int Init_Timer(){
