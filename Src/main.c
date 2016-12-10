@@ -8,6 +8,7 @@
 #include "system_stm32f7xx.h"
 
 // -- Function Defines ------
+void SystemInit(void);
 int Init_Timer();
 void TIM6_DAC_IRQHandler(void);
 extern void initialise_monitor_handles();
@@ -36,6 +37,33 @@ int main(void) {
 		counter = (counter+1) % SystemCoreClock;
 		if (!counter) printf("Howdy all!\n");
 	}
+}
+
+void SystemInit(void){
+  // Enable FPU, set CP10 and CP11 Full Access
+  SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));
+
+  // Reset the RCC clock configuration
+  // Set HSION bit
+  RCC->CR |= (uint32_t)0x00000001;
+
+  // Reset CFGR register
+  RCC->CFGR = 0x00000000;
+
+  // Reset HSEON, CSSON and PLLON bits
+  RCC->CR &= (uint32_t)0xFEF6FFFF;
+
+  // Reset PLLCFGR register
+  RCC->PLLCFGR = 0x24003010;
+
+  // Reset HSEBYP bit
+  RCC->CR &= (uint32_t)0xFFFBFFFF;
+
+  // Disable all interrupts
+  RCC->CIR = 0x00000000;
+
+  // Vector Table Relocation in Internal FLASH
+  SCB->VTOR = FLASH_BASE;
 }
 
 int Init_Timer(){
