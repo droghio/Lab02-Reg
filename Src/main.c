@@ -14,10 +14,16 @@ void TIM6_DAC_IRQHandler(void);
 extern void initialise_monitor_handles();
 
 // -- Code Body -------------
+volatile uint8_t timeUpdated = 0;
+volatile uint32_t elapsed = 0;
+
 int main(void) {
 	// Defined by CMSIS.
 	SystemInit();
 	Init_Timer();
+
+	// Enable semihosting printing.
+	initialise_monitor_handles();
 
 	// Enable GPIO clock?
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
@@ -29,13 +35,12 @@ int main(void) {
 	GPIOJ->MODER |= GPIO_MODER_MODER13
 			& (GPIO_MODER_MODER13 - (GPIO_MODER_MODER13 >> 1));
 
-	// Enable semihosting printing.
-	initialise_monitor_handles();
-
-	uint32_t counter = 0;
+	printf("Howdy all!\n");
 	while (1){
-		counter = (counter+1) % SystemCoreClock;
-		if (!counter) printf("Howdy all!\n");
+		if (timeUpdated){
+			printf("Time Running: %u\n", (unsigned int) elapsed);
+			timeUpdated = 0;
+		}
 	}
 }
 
@@ -78,10 +83,10 @@ int Init_Timer(){
     asm ( "nop" );
 
     // Set pre-scaler to make a 10kHz ticker.
-    TIM6->PSC = (uint32_t) ((SystemCoreClock / 10000U) - 1U);
+    TIM6->PSC = (uint32_t) ((SystemCoreClock / 100000U) - 1U);
 
-    // Set the Auto-reload Value for 1Hz overflow
-    TIM6->ARR = (10000U / 1U) - 1U;
+    // Set the Auto-reload Value for 10Hz overflow
+    TIM6->ARR = (100000U / 10U) - 1U;
 
     // Enable Update Interrupts.
     TIM6->EGR = TIM_EGR_UG;
@@ -97,4 +102,8 @@ void TIM6_DAC_IRQHandler(void) {
 
 	//Toggle GPIO_PIN_13 (LED1)
 	GPIOJ->ODR ^= ((uint16_t)0x2000U);
+
+	// Updated variable to print update.
+	elapsed++;
+	timeUpdated = 1;
 }
