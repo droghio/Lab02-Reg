@@ -1,5 +1,3 @@
 "Drivers/CMSIS/system_stm32f7xx.o"
 "Example/SW4STM32/startup_stm32f769xx.o"
 "Example/User/main.o"
-"Example/User/stm32f7xx_hal_timebase_tim.o"
-"Example/User/stm32f7xx_it.o"
