@@ -8,11 +8,14 @@
 #include "system_stm32f7xx.h"
 
 // -- Function Defines ------
-void SystemInit(void);
-int Init_Timer();
-void TIM6_DAC_IRQHandler(void);
+void SystemInit();
+void Init_Timer();
+void Init_GPIO();
+void TIM6_DAC_IRQHandler();
+void EXTI0_IRQHandler();
 int _write(int file, char *ptr, int len){
-	for (int DataIdx = 0; DataIdx < len; DataIdx++){ ITM_SendChar( *ptr++ ); }
+	for (int DataIdx = 0; DataIdx < len; DataIdx++);
+	// TODO actually make this print the value;
 	return len;
 }
 
@@ -20,20 +23,11 @@ int _write(int file, char *ptr, int len){
 volatile uint8_t timeUpdated = 0;
 volatile uint32_t elapsed = 0;
 
-int main(void) {
+int main() {
 	// Defined by CMSIS.
 	SystemInit();
 	Init_Timer();
-
-	// Enable GPIO clock?
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
-	/* Delay after an RCC peripheral clock enabling */
-	asm ("nop");
-	asm ("nop");
-
-	// Set Pin 13 to output.
-	GPIOJ->MODER |= GPIO_MODER_MODER13
-			& (GPIO_MODER_MODER13 - (GPIO_MODER_MODER13 >> 1));
+	Init_GPIO();
 
 	printf("Howdy all!\n");
 	while (1){
@@ -44,7 +38,9 @@ int main(void) {
 	}
 }
 
-void SystemInit(void){
+// -- Init Functions ----------
+
+void SystemInit(){
   // Enable FPU, set CP10 and CP11 Full Access
   SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));
 
@@ -71,9 +67,9 @@ void SystemInit(void){
   SCB->VTOR = FLASH_BASE;
 }
 
-int Init_Timer(){
-	// Enable the global interrupt register.
-	// Looks like HAL hid this little gem, not this register isn't mentioned in
+void Init_Timer(){
+	// Enable the TIM6 interrupt.
+	// Looks like HAL hid this little gem, this register isn't mentioned in
 	//   the STM32F7 ARM Reference Manual....
 	NVIC->ISER[TIM6_DAC_IRQn/32U] = (uint32_t)(1UL << (((uint32_t)TIM6_DAC_IRQn) & 0x1FUL));
 
@@ -93,17 +89,64 @@ int Init_Timer(){
 
     TIM6->DIER |= TIM_DIER_UIE;
 	TIM6->CR1 |= TIM_CR1_CEN;
-	return 0;
 }
 
-void TIM6_DAC_IRQHandler(void) {
+void Init_GPIO() {
+	// Enable GPIO clocks?
+	// Looks like GPIO reg updates are synced to a base clock.
+	//  for any changes to appear the clocks need to be running.
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+	// Delay after an RCC peripheral clock enabling
+	asm ("nop");
+	asm ("nop");
+
+
+	// Set Pin 13 to output. LED1
+	GPIOJ->MODER |= GPIO_MODER_MODER13
+			& (GPIO_MODER_MODER13 - (GPIO_MODER_MODER13 >> 1));
+
+	// Set Pin 13 to output. LED2
+	GPIOJ->MODER |= GPIO_MODER_MODER5
+			& (GPIO_MODER_MODER5 - (GPIO_MODER_MODER5 >> 1));
+
+	// GPIO Interrupt
+	// By default pin 0 will trigger the interrupt,
+	//  so no need to mess with SYSCFG_EXTICR1.
+
+	// Set Pin 0 as input (button) with pull-up.
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0
+			& (GPIO_PUPDR_PUPDR0 - (GPIO_PUPDR_PUPDR0 >> 1));
+
+	// Set interrupt enable for EXTI0.
+	NVIC->ISER[EXTI0_IRQn / 32U] = (uint32_t) (1UL
+			<< (((uint32_t) EXTI0_IRQn) & 0x1FUL));
+
+	// Unmask interrupt.
+	EXTI->IMR |= EXTI_IMR_MR0;
+
+	// Register for rising edge.
+	EXTI->RTSR |= EXTI_RTSR_TR0;
+}
+
+// -- ISRs (IRQs) -------------
+
+void TIM6_DAC_IRQHandler() {
 	// Clear Interrupt Bit
 	TIM6->SR = ~TIM_DIER_UIE;
 
 	//Toggle GPIO_PIN_13 (LED1)
-	GPIOJ->ODR ^= ((uint16_t)0x2000U);
+	GPIOJ->ODR ^= ((uint16_t)0x0020U);
 
 	// Updated variable to print update.
 	elapsed++;
 	timeUpdated = 1;
+}
+
+void EXTI0_IRQHandler() {
+	// Clear Interrupt Bit (by setting it, weird I know).
+	EXTI->PR |= EXTI_PR_PR0;
+
+	//Toggle GPIO_PIN_5 (LED2)
+	GPIOJ->ODR ^= ((uint16_t)0x2000U);
 }
