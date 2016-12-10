@@ -10,9 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include Example/User/subdir.mk
 -include Example/SW4STM32/subdir.mk
--include Drivers/STM32F7xx_HAL_Driver/subdir.mk
 -include Drivers/CMSIS/subdir.mk
--include Drivers/BSP/STM32F769I-Discovery/subdir.mk
 -include subdir.mk
 -include objects.mk
 

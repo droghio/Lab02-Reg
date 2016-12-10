@@ -15,9 +15,7 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Drivers/BSP/STM32F769I-Discovery \
 Drivers/CMSIS \
-Drivers/STM32F7xx_HAL_Driver \
 Example/SW4STM32 \
 Example/User \
 

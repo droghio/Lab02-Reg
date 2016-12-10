@@ -35,9 +35,6 @@
 								<option id="gnu.c.compiler.option.include.paths.1585859089" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../../Inc"/>
 									<listOptionValue builtIn="false" value="../../../../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include"/>
-									<listOptionValue builtIn="false" value="../../../../../../../../Drivers/STM32F7xx_HAL_Driver/Inc"/>
-									<listOptionValue builtIn="false" value="../../../../../../../../Drivers/BSP/STM32F769I-Discovery"/>
-									<listOptionValue builtIn="false" value="../../../../../../../../Drivers/BSP/Components/Common"/>
 									<listOptionValue builtIn="false" value="../../../../../../../../Utilities/Log"/>
 									<listOptionValue builtIn="false" value="../../../../../../../../Utilities/Fonts"/>
 									<listOptionValue builtIn="false" value="../../../../../../../../Utilities/CPU"/>
@@ -85,8 +82,26 @@
 							<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s.1340948369" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s"/>
 						</tool>
 					</fileInfo>
+					<folderInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.958588455.1590646612" name="/" resourcePath="Debug/Drivers/CMSIS">
+						<toolChain id="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug.2046377896" name="Ac6 STM32 MCU GCC" superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug" unusedChildren="">
+							<option id="fr.ac6.managedbuild.option.gnu.cross.prefix.95373098.1026811393" name="Prefix" superClass="fr.ac6.managedbuild.option.gnu.cross.prefix.95373098"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.mcu.2092538456.744130984" name="Mcu" superClass="fr.ac6.managedbuild.option.gnu.cross.mcu.2092538456"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.board.382430835.1030252982" name="Board" superClass="fr.ac6.managedbuild.option.gnu.cross.board.382430835"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1007437325.42516877" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1007437325"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.228736837.545978369" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.228736837"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.floatabi.423739657.1840187104" name="Floating-point ABI" superClass="fr.ac6.managedbuild.option.gnu.cross.floatabi.423739657"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1423504015" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.665545063"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.468298508" name="MCU G++ Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1153736891"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.1530879807" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.2144430557"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.1322005601" name="MCU G++ Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.235080227"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.archiver.87197444" name="MCU GCC Archiver" superClass="fr.ac6.managedbuild.tool.gnu.archiver.334611811"/>
+							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.230929573" name="MCU GCC Assembler" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.2042261945"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Drivers|Debug/Drivers" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Debug/Drivers/CMSIS"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers/CMSIS"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
