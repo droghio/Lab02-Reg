@@ -11,7 +11,10 @@
 void SystemInit(void);
 int Init_Timer();
 void TIM6_DAC_IRQHandler(void);
-extern void initialise_monitor_handles();
+int _write(int file, char *ptr, int len){
+	for (int DataIdx = 0; DataIdx < len; DataIdx++){ ITM_SendChar( *ptr++ ); }
+	return len;
+}
 
 // -- Code Body -------------
 volatile uint8_t timeUpdated = 0;
@@ -21,9 +24,6 @@ int main(void) {
 	// Defined by CMSIS.
 	SystemInit();
 	Init_Timer();
-
-	// Enable semihosting printing.
-	initialise_monitor_handles();
 
 	// Enable GPIO clock?
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
